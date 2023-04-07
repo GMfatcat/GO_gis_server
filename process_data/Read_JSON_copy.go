@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gis_server/process_data/gis_package" // try to import GIS_Index_copy
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -143,5 +144,8 @@ func main() {
 	// batch_processing(directoryPath)
 	// goroutines batch processing
 	goroutine_batch_processing(directoryPath)
+	// test import gis_package
+	fmt.Printf("Lat : %f %f\n",gis_package.MinLat,gis_package.MaxLat)
+	fmt.Printf("Lon : %f %f\n",gis_package.MinLon,gis_package.MaxLon)
 
 }

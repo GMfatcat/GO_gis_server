@@ -1,0 +1,3 @@
+_copy.go : test import module --> current failed
+
+// GIS_Index.go & Read_JSON.go is OK //
