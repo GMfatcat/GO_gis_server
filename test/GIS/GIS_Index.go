@@ -1,9 +1,10 @@
-package gis_package
+package gis
 
 import (
 	"fmt"
 	"math"
-	"time"
+	"os"
+	"encoding/gob"
 )
 
 // ------------------ Config ----------------- //
@@ -15,9 +16,9 @@ type Coordinate struct {
 
 // Grid 為自定義的網格結構
 type Grid struct {
-	rows int
-	cols int
-	grid [][][]Coordinate
+	Rows int
+	Cols int
+	Grid [][][]Coordinate
 }
 
 var (
@@ -29,8 +30,13 @@ var (
 )
 
 // ------------------ Function ----------------- //
+// register struct to save gob binary data of Grid
+func init() {
+	gob.Register(Grid{})
+	gob.Register(Coordinate{})
+}
 // -1 = undefined
-func getRowsCols(
+func GetRowsCols(
 	lat float64,
 	lon float64,
 	minLat float64,
@@ -39,8 +45,8 @@ func getRowsCols(
 	maxLon float64,
 	gridSize float64,
 ) (
-	cols int,
 	rows int,
+	cols int,
 ) {
 
 	// if no assign use the global value
@@ -79,14 +85,14 @@ func getRowsCols(
 // 初始化 Grid
 func NewGrid(rows int, cols int) *Grid {
 	g := &Grid{
-		rows: rows,
-		cols: cols,
-		grid: make([][][]Coordinate, rows),
+		Rows: rows,
+		Cols: cols,
+		Grid: make([][][]Coordinate, rows),
 	}
 	for i := 0; i < rows; i++ {
-		g.grid[i] = make([][]Coordinate, cols)
+		g.Grid[i] = make([][]Coordinate, cols)
 		for j := 0; j < cols; j++ {
-			g.grid[i][j] = make([]Coordinate, 0)
+			g.Grid[i][j] = make([]Coordinate, 0)
 		}
 	}
 	return g
@@ -94,20 +100,39 @@ func NewGrid(rows int, cols int) *Grid {
 
 // 將座標資訊存入 Grid 中的指定 row 和 col
 func (g *Grid) AddCoordinate(row, col int, coord Coordinate) {
-	g.grid[row][col] = append(g.grid[row][col], coord)
+	g.Grid[row][col] = append(g.Grid[row][col], coord)
 }
 
 // 從 Grid 中取得指定 row 和 col 對應的座標資訊
 func (g *Grid) GetCoordinates(row, col int) []Coordinate {
-	return g.grid[row][col]
+	return g.Grid[row][col]
 }
+
+// 將 Grid 資料以二進制格式寫入檔案
+func SaveGrid(grid *Grid, filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := gob.NewEncoder(file)
+	err = encoder.Encode(grid)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Grid data has been written to", filename)
+	return nil
+}
+
 /*
 func main() {
 
 	// start time
 	startTime := time.Now()
 	// 計算所有網格的行數和列數 --> -1.0 as use GLOBAL
-	all_rows, all_cols := getRowsCols(-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0)
+	all_rows, all_cols := GetRowsCols(-1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0)
 	fmt.Printf("TOTAL col=%d, row=%d\n", all_cols, all_rows)
 	// 初始化Grid
 	grid := NewGrid(all_rows, all_cols)
@@ -115,7 +140,7 @@ func main() {
 	// 計算獨立測資的行數和列數
 	lat := 25.12345
 	lon := 121.98765
-	row, col := getRowsCols(lat, lon, -1.0, -1.0, -1.0, -1.0, -1.0)
+	row, col := GetRowsCols(lat, lon, -1.0, -1.0, -1.0, -1.0, -1.0)
 	fmt.Printf("Lon=%f, Lat=%f : col=%d, row=%d\n", lon, lat, col, row)
 
 	// 建立這組座標結構
