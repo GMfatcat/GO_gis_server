@@ -10,4 +10,5 @@
     
 1. FINISH MULTI-PROCESSING GENERATE FAKE DATA in 9.81 min : 526 MB / 3,769,343 files in 120 folders    
 2. Finish GIS GRID INDEX CALCULATION: Solve import modules in Test directory    
-3. Calculate and Save binary data of batch_1 in 0.5 ~ 0.6 seconds
+3. Calculate and Save binary data of batch_1 in 0.5 ~ 0.6 seconds    
+4. Add simple redis connection: save Grid data for 5 seconds
