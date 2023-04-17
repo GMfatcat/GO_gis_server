@@ -25,6 +25,4 @@ redis-cli ping
 redis-cli --version
 ```
 
-:::info
-Redis for Windows version 5.0.14.1
-:::
+:point_right: I use Redis for Windows version 5.0.14.1
