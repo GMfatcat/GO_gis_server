@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"gis_server/test/DB"  //import db module
 	"gis_server/test/GIS" //import gis module
 	"io/ioutil"
 	"os"
@@ -126,6 +127,48 @@ func save_grid(grid *gis.Grid, filename string) {
 	}
 }
 
+func convert_grid_to_gridsum(grid *gis.Grid) *db.GridSum {
+
+	gridSum := &db.GridSum{
+		Rows:    grid.Rows,
+		Cols:    grid.Cols,
+		GridSum: make([][]int, grid.Rows),
+	}
+	// record sum to gridSum
+	for i := 0; i < grid.Rows; i++ {
+		gridSum.GridSum[i] = make([]int, grid.Cols)
+		for j := 0; j < grid.Cols; j++ {
+			gridSum.GridSum[i][j] = len(grid.Grid[i][j])
+		}
+	}
+
+	return gridSum
+
+}
+
+func save_to_redis(gridSum *db.GridSum, expire_time int) {
+	// make connection with redis
+	client, err := db.RedisConnection()
+	if err != nil {
+		fmt.Println("Redis Error:", err)
+	}
+
+	// save gridSum to redis server
+	db.SaveGridSum(gridSum.GridSum, client, expire_time)
+	fmt.Println("Save to Redis!! Expire time:", expire_time, "sec")
+
+	// check value after 5 and 11 seconds
+	// QueryGridSum in row = 100 col = 100
+	time.Sleep(5 * time.Second) // 讓程式睡 5 秒
+	fmt.Println("After 5 seconds..")
+	db.QueryGridSum(100, 100, client)
+	time.Sleep(6 * time.Second) // 讓程式睡 6 秒
+	fmt.Println("After 11 seconds..")
+	db.QueryGridSum(100, 100, client)
+}
+
+// ///////////////////////////////////
+
 func goroutine_batch_processing(directoryPath string) {
 	// start time
 	startTime := time.Now()
@@ -168,6 +211,10 @@ func goroutine_batch_processing(directoryPath string) {
 	fmt.Printf("Grid cols=%d, rows=%d\n", MaxCols, MaxRows)
 	test_gis(100, 100, grid) //test Grid(100,100)
 	save_grid(grid, "mygrid")
+	// test Redis
+	gridsum := convert_grid_to_gridsum(grid)
+	// expire time = 10 sec
+	save_to_redis(gridsum, 10)
 }
 
 func main() {
@@ -178,7 +225,7 @@ func main() {
 	// goroutines batch processing
 	goroutine_batch_processing(directoryPath)
 	// test import gis_package
-	fmt.Printf("Lat : %f %f\n", gis.MinLat, gis.MaxLat)
-	fmt.Printf("Lon : %f %f\n", gis.MinLon, gis.MaxLon)
+	// fmt.Printf("Lat : %f %f\n", gis.MinLat, gis.MaxLat)
+	// fmt.Printf("Lon : %f %f\n", gis.MinLon, gis.MaxLon)
 
 }
