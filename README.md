@@ -3,7 +3,7 @@
 - [x] Generate Massive Fake Data (2023/4/4)
 - [x] GO calculate GIS Index (2023/4/8)
 - [x] GO connect to Redis for cache and temporary storage
-- [ ] Construct Simple Web Page for Visualizations(80% finished, time-line plot undone)
+- [x] Construct Simple Web Page for Visualizations(time-line done)
 - [ ] Integrate GO server with DB and Web Page
 - [ ] TBD
 
@@ -14,6 +14,7 @@
 4. Add simple redis connection: save simple Grid data for 10 seconds(local test)    
 5. Finish All GIS GRID SUM save to redis(expire time is controlable now, now set to 10 sec)    
 6. Construct simple dashboard by python ```dash plotly```, not integrated with GO server yet.    
+7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)    
 
 Redis-Server Commands
 ```=

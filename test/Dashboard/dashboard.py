@@ -1,4 +1,6 @@
 import numpy as np
+import psutil
+from collections import deque
 import os
 import datetime
 import plotly.express as px
@@ -36,40 +38,46 @@ THUMBS_UP = u"\U0001F44D"
 # Screenshots save path
 SCREEN_FOLDER = "Screenshots"
 
-# TODO: Add a update line plot to see the flow of sum and max in times
+# Queue for the flow fig，init with all 0
+QUEUE_MAX_SIZE = 21
+FLOW_QUEUE = deque([0]*QUEUE_MAX_SIZE, maxlen = QUEUE_MAX_SIZE)
+FLOW_X = [i for i in range(QUEUE_MAX_SIZE)]
+FLOW_THRESHOLD = 35000
+WARNING_LINE = [FLOW_THRESHOLD for _ in range(QUEUE_MAX_SIZE)]
 
 # 設定 Dash 應用程式的介面
 app.layout = html.Div([
-    html.H1('Real Time Signal Dense Grid',style={'margin-left': '25px'}),
-    html.Label('Colormap: ',style={'margin-left': '25px'}),
+    # html.H1('Real Time Signal Dense Grid',style={'margin-left': '25px'}),
+    # html.Label('Colormap: ',style={'margin-left': '25px'}),
     html.Div([
+    html.H1('Real Time Signal Dense Grid',style={'margin-left': '25px'}),
+    # html.Label('Colormap: ',style={'margin-left': '25px'}),
     # tool panel(color)
     dcc.Dropdown(
         id='colorscale-dropdown',
         options=colorscale_options,
         value='Viridis',
-        style={'margin-left': '10px','width': '120px'}
+        style={'margin-left': '7px','margin-top': '12px','width': '120px'}
         ),
     html.Button('Generate Random Array',
                 id='generate-button',
                 n_clicks=0,
-                style={'margin-left': '20px'}
+                style={'margin-left': '15px','margin-top': '22px','height': '37px'}
                 ),
     html.Button('Full Page Screenshot',
                 id='generate-full-page-screenshot',
                 n_clicks=0,
-                style={'margin-left': '10px'}
+                style={'margin-left': '10px','margin-top': '22px','height': '37px'}
                 ),
     # only for screenshot output
-    html.Div(id='screenshot-output-div',style={'margin-left': '10px','margin-top': '5px'})
+    html.Div(id='screenshot-output-div',style={'margin-left': '10px','margin-top': '24px'})
     ],style={'display': 'flex', 'flex-direction': 'row'}),
     # only for screenshot output
     dcc.Interval(
         id='screenshot-output-component',
-        interval=2500, # 2秒
+        interval=2500, # 2.5秒
         n_intervals=0
     ),
-    # horizontal line
     html.Hr(),
     # heatmap and guage
     html.Div([
@@ -88,8 +96,36 @@ app.layout = html.Div([
         id='interval-component',
         interval=10000,  # 設定觸發間隔為10秒
         n_intervals=0  # 起始時點的 n_intervals 值
-    )
+    ),
+    html.Div([
+    dcc.Graph(
+            id='flow-chart'
+            ),
+    html.Div([
+        html.Img(src = '/assets/golang-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'}),
+        html.Img(src = '/assets/redis-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'})
+    ],style={'display': 'flex', 'flex-direction': 'column'}),
+    html.Div([
+        html.Img(src = '/assets/sql-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'}),
+        html.Img(src = '/assets/github-142-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'})
+    ],style={'display': 'flex', 'flex-direction': 'column'}),
+    html.Div([
+        html.Img(src = '/assets/flask-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'}),
+        html.Img(src = '/assets/python-svgrepo-com.svg',
+        style = {'height': '80px', 'width': '80px', 'margin': '10px'})
+    ],style={'display': 'flex', 'flex-direction': 'column'})
+    ],style={'margin-left': '30px','display': 'flex', 'flex-direction': 'row'})
     ])
+
+def get_system_status():
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_usage = psutil.virtual_memory().percent
+    return cpu_usage,memory_usage
 
 @app.callback(
     Output('screenshot-output-div', 'children'),
@@ -115,6 +151,25 @@ def handle_screenshot(n_clicks,n_intervals):
     # remove the word after 2 sec
     if triggered_id == "screenshot-output-component" and n_intervals is not None and n_intervals > 0:
         return ""
+
+def get_flowfig(key_value,data_queue,h,w,fig_title):
+    # data save into queue
+    data_queue.append(key_value)
+    data_list = list(data_queue)
+    # fig
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x = FLOW_X, y = data_list, name='Signal Flow',
+                         line = dict(color = 'royalblue', width = 3, dash = 'dashdot')))
+    fig.add_trace(go.Scatter(x = FLOW_X, y = WARNING_LINE, name='Warning',
+                         line = dict(color = 'firebrick', width = 2, dash = 'dash')))
+    fig.layout.height = h
+    fig.layout.width = w
+    # get system status
+    cpu_usage,memory_usage = get_system_status()
+    fig.update_layout(title = f"{fig_title} CPU:{cpu_usage}% Memory:{memory_usage}%",
+                   xaxis_title = 'Recent ➝ Past',
+                   yaxis_title ='Total',title_x=0.5,title_y=0.8)
+    return fig
 
 def get_guage(key_value,fig_title,max_range):
     # 創建Gauge Chart
@@ -152,25 +207,31 @@ def get_gridfig(data, colorscale, colorbar_title, title, scale, current_time):
     return fig
 
 # TODO: make the x y axis number same to the longitude and latitude
-def show_grid(data,colorscale):
+def generate_fig(data,colorscale):
     # get current time
     current_time = get_current_time()
     # sum fig
     sum_fig = get_gridfig(data,colorscale,"Total","Signal Total Count",550,current_time)
     # density fig (signal / 4 km²) --> each grid is 2 km width and height
     density_fig = get_gridfig(data/4,colorscale,"Density","Signal Density",550,current_time)
+    # Total sum and Max value
+    total_sum = np.sum(data)
+    max_value = data.max()
     # guage
-    sum_guage_fig = get_guage(np.sum(data),"Total Signal",max_range = 45000)
-    max_guage_fig = get_guage(data.max(), "Max Signal in Grid",max_range = 120)
+    sum_guage_fig = get_guage(total_sum,"Total Signal",max_range = 45000)
+    max_guage_fig = get_guage(max_value, "Max Signal in Grid",max_range = 120)
+    # flow fig
+    flow_fig = get_flowfig(total_sum,FLOW_QUEUE,250,1150,f'Signal Flow (Latest {QUEUE_MAX_SIZE - 1})')
     # return
-    return sum_fig,density_fig,sum_guage_fig,max_guage_fig
+    return sum_fig,density_fig,sum_guage_fig,max_guage_fig,flow_fig
 
 # 合併兩個回呼為一個回呼
 @app.callback(
     [Output('grid-graph', 'figure'),
      Output('grid-graph2', 'figure'),
      Output('gauge-chart1', 'figure'),
-     Output('gauge-chart2', 'figure')],
+     Output('gauge-chart2', 'figure'),
+     Output('flow-chart', 'figure')],
     [Input('colorscale-dropdown', 'value')],
     [Input('generate-button', 'n_clicks')],
     [Input('interval-component', 'n_intervals')]
@@ -189,13 +250,15 @@ def update_figures(colorscale, n_clicks, n_intervals):
         # 初始資料
         data = init_data
 
-    sum_fig,density_fig,guage_fig1,guage_fig2 = show_grid(data, colorscale)
-    return sum_fig, density_fig,guage_fig1,guage_fig2
+    sum_fig,density_fig,guage_fig1,guage_fig2,flow_fig = generate_fig(data, colorscale)
+    return sum_fig, density_fig,guage_fig1,guage_fig2,flow_fig
 
 
 # 啟動 Dash 應用程式
 if __name__ == '__main__':
     if not os.path.exists(SCREEN_FOLDER):
         os.makedirs(SCREEN_FOLDER)
-    # run dashboard
+    # run dashboard in debug mode
     app.run_server(debug=True)
+    # run dashboard
+    # app.run_server()
