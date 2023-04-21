@@ -30,9 +30,17 @@ redis-cli --version
 
 :point_right: I use Redis for Windows version 5.0.14.1    
 
-## Save Directory ##    
+## Genrate Fake Data :bangbang:##
+:warning:Read Data_Generation_Warning.txt first before anything:warning:
+```=
+// run Generate_Fake_JSON_multiprocess.py to generate Fake Data
+python Generate_Fake_JSON_multiprocess.py
+```
+
+## Save Directory :file_folder:##    
 ```=
 // Fake JSON - under multiple batch_x directory, x = 1 ~ 120
+// run Generate_Fake_JSON_multiprocess.py to generate Fake Data
 D:\Fake_Data\batch_x
 
 // Grid Binary
@@ -42,7 +50,7 @@ D:\binary_grids\
 D:\GO_gis_server\test\Dashboard\Screenshots
 ```    
 
-## Operation ##
+## Operation :signal_strength:##
 ```=
 // Open one powershell (PS), one normal CMD (CMD),one anaconda python prompt (AP)
 
@@ -60,4 +68,4 @@ AP : python dashboard.py
 PS : go run .\Read_JSON.go
 ```    
 
-Take a while, the dashboard will automatic update
+Take a while, the dashboard will automatic update:repeat:
