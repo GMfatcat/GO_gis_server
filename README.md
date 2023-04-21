@@ -1,3 +1,9 @@
+---
+kramdown:
+  syntax_highlighter: rouge
+  input: GFM
+---
+
 ### GO_gis_server
     
 - [x] Generate Massive Fake Data (2023/4/4)
@@ -80,6 +86,7 @@ Take a while, the dashboard will automatic update:repeat:
 This is my first try of GO language project, so I keep less third party modules
 :::
 <!-- END_INFO -->
+
 
 ## Creator
 
