@@ -75,10 +75,11 @@ Take a while, the dashboard will automatic update:repeat:
   <img src="./test/Dashboard/Screenshots/2023_04_21_15_14_08_fullscreenshot.png" alt="Dashboard Example">
 </p>  
 
-
+<!-- INFO -->
 :::info
 This is my first try of GO language project, so I keep less third party modules
 :::
+<!-- END_INFO -->
 
 ## Creator
 
