@@ -1,10 +1,11 @@
----
-kramdown:
-  syntax_highlighter: rouge
-  input: GFM
----
-
 ### GO_gis_server
+
+| Package | Version | Notes |
+| :------:| :-----: | :------: |
+| GO  | go1.19.2 windows/amd64 | :hammer: |
+| go-redis  | v9 v9.0.3  | :dagger:  |
+| Python  |  3.8.13  | :bow_and_arrow:  |
+| redis-py  |  4.5.4  | :crossed_swords:|
     
 - [x] Generate Massive Fake Data (2023/4/4)
 - [x] GO calculate GIS Index (2023/4/8)
@@ -81,11 +82,9 @@ Take a while, the dashboard will automatic update:repeat:
   <img src="./test/Dashboard/Screenshots/2023_04_21_15_14_08_fullscreenshot.png" alt="Dashboard Example">
 </p>  
 
-<!-- INFO -->
-:::info
+<div class="info">
 This is my first try of GO language project, so I keep less third party modules
-:::
-<!-- END_INFO -->
+</div>
 
 
 ## Creator
