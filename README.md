@@ -14,6 +14,7 @@
 - [x] Integrate GO server with DB and Web Page
 - [ ] Optimize the speed of Dashboard (maybe ?)
 - [ ] Correct the XY label name of Dashboard (maybe ?)
+- [ ] Add logging system (maybe ?)
     
 1. FINISH MULTI-PROCESSING GENERATE FAKE DATA in 9.81 min : 526 MB / 3,769,343 files in 120 folders    
 2. Finish GIS GRID INDEX CALCULATION: Solve import modules in Test directory    
