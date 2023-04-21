@@ -17,7 +17,7 @@
 7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
 8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)   
 
-## Redis-Server Commands ##
+## Redis-Server Commands :hugs:
 ```=
 // RUN with cmd , not powershell
 redis-server --service-start
@@ -30,14 +30,14 @@ redis-cli --version
 
 :point_right: I use Redis for Windows version 5.0.14.1    
 
-## Genrate Fake Data :bangbang:##
+## Genrate Fake Data :bangbang:
 :warning:Read Data_Generation_Warning.txt first before anything:warning:
 ```=
 // run Generate_Fake_JSON_multiprocess.py to generate Fake Data
 python Generate_Fake_JSON_multiprocess.py
 ```
 
-## Save Directory :file_folder:##    
+## Save Directory :file_folder:   
 ```=
 // Fake JSON - under multiple batch_x directory, x = 1 ~ 120
 // run Generate_Fake_JSON_multiprocess.py to generate Fake Data
@@ -50,7 +50,7 @@ D:\binary_grids\
 D:\GO_gis_server\test\Dashboard\Screenshots
 ```    
 
-## Operation :signal_strength:##
+## Operation :signal_strength:
 ```=
 // Open one powershell (PS), one normal CMD (CMD),one anaconda python prompt (AP)
 
@@ -68,4 +68,17 @@ AP : python dashboard.py
 PS : go run .\Read_JSON.go
 ```    
 
-Take a while, the dashboard will automatic update:repeat:
+Take a while, the dashboard will automatic update:repeat:    
+
+## Creator
+
+**GMfatcat** @ 2023/4/21
+
+- <https://github.com/GMfatcat>
+- <https://gmfatcat.github.io/website.io/>
+
+## Copyright and license
+
+Code released under the [MIT License](https://reponame/blob/master/LICENSE).  
+
+Enjoy :metal:
