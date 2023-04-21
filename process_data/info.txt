@@ -1,3 +1,4 @@
 _copy.go : test import module --> current failed --> move to ../test/
 
 // GIS_Index.go & Read_JSON.go is OK //
+// This folder's file is all for test only //

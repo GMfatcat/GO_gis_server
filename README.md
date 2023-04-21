@@ -83,7 +83,8 @@ Take a while, the dashboard will automatic update:repeat:
 </p>  
 
 
-**This is my first try of GO language project, so I keep less third party modules**
+**This is my first try of GO language project, so I keep less third party modules**    
+**So I don't want to use Webpage module such as ```GIN```**
 
 
 
