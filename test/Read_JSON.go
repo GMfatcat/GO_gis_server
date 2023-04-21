@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+// define root & saving directory
+var RootDir = `D:/Fake_Data/Data_multiprocess/`
+var SaveGridDir = `D:/binary_grids/`
+
 // define json struct
 // Captial First Letter for json parsing
 type json_data struct {
@@ -157,14 +161,14 @@ func save_to_redis(gridSum *db.GridSum, expire_time int) {
 	db.SaveGridSum(gridSum.GridSum, client, expire_time)
 	fmt.Println("Save to Redis!! Expire time:", expire_time, "sec")
 
-	// check value after 5 and 11 seconds
+	// check value after 5 and 21 seconds
 	// QueryGridSum in row = 100 col = 100
-	time.Sleep(5 * time.Second) // 讓程式睡 5 秒
-	fmt.Println("After 5 seconds..")
+	// time.Sleep(5 * time.Second) // 讓程式睡 5 秒
+	// fmt.Println("After 5 seconds..")
 	db.QueryGridSum(100, 100, client)
-	time.Sleep(6 * time.Second) // 讓程式睡 6 秒
-	fmt.Println("After 11 seconds..")
-	db.QueryGridSum(100, 100, client)
+	// time.Sleep(16 * time.Second) // 讓程式睡 6 秒
+	// fmt.Println("After 16 seconds..")
+	// db.QueryGridSum(100, 100, client)
 }
 
 // ///////////////////////////////////
@@ -210,22 +214,41 @@ func goroutine_batch_processing(directoryPath string) {
 	//save & test GIS output
 	fmt.Printf("Grid cols=%d, rows=%d\n", MaxCols, MaxRows)
 	test_gis(100, 100, grid) //test Grid(100,100)
-	save_grid(grid, "mygrid")
+	// save grid
+	cuurent_dir_name := filepath.Base(directoryPath)
+	gridpath := filepath.Join(SaveGridDir, cuurent_dir_name)
+	save_grid(grid, gridpath)
 	// test Redis
 	gridsum := convert_grid_to_gridsum(grid)
 	// expire time = 10 sec
-	save_to_redis(gridsum, 10)
+	save_to_redis(gridsum, 15)
 }
 
 func main() {
 
 	fmt.Printf("Starting...\n")
-	//var file_path string = `D:/Fake_Data/Data_multiprocess/batch_1/data_2023-04-01_10-10-05_00a20d9f-fdd2-4483-97c9-65c833b99c5a.json`
-	var directoryPath string = `D:/Fake_Data/Data_multiprocess/batch_1/`
-	// goroutines batch processing
-	goroutine_batch_processing(directoryPath)
 	// test import gis_package
 	// fmt.Printf("Lat : %f %f\n", gis.MinLat, gis.MaxLat)
 	// fmt.Printf("Lon : %f %f\n", gis.MinLon, gis.MaxLon)
+	// Walk every directory under root directory
+	filepath.Walk(RootDir, ProcessEveryDirectory)
 
+}
+
+func ProcessEveryDirectory(path string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+	if info.IsDir() {
+		// Skip root directory
+		if path == RootDir {
+			return nil
+		}
+		// Call goroutine_batch_processing on each subdirectory
+		// goroutines batch processing
+		goroutine_batch_processing(path)
+		// Stop for 9 seconds
+		time.Sleep(15 * time.Second)
+	}
+	return nil
 }

@@ -5,19 +5,16 @@ import os
 import datetime
 import plotly.express as px
 import plotly.graph_objects as go
-from dash import Dash, dcc, html, Input, Output, callback_context
+from dash import Dash, dcc, html, Input, Output, callback_context, State
+from dash.exceptions import PreventUpdate
 # import dash_bootstrap_components as dbc
 from PIL import ImageGrab
-# fetch redis data
-from py_redis import get_redis_data
 
 
-# 生成隨機的Numpy 陣列
+# 生成隨機的 5x5 Numpy 陣列
 np.random.seed(0)
-# init_data = np.random.randint(100,size = (240, 220))
-init_data = np.zeros((240,220))
-# backup_data is the most recent data from redis
-backup_data = None
+# init_data = np.random.rand(30, 20)
+init_data = np.random.randint(100,size = (30, 20))
 
 # 建立 Dash 應用程式
 # 載入bootstrap感覺有點慢
@@ -45,7 +42,7 @@ SCREEN_FOLDER = "Screenshots"
 QUEUE_MAX_SIZE = 21
 FLOW_QUEUE = deque([0]*QUEUE_MAX_SIZE, maxlen = QUEUE_MAX_SIZE)
 FLOW_X = [i for i in range(QUEUE_MAX_SIZE)]
-FLOW_THRESHOLD = 55000
+FLOW_THRESHOLD = 35000
 WARNING_LINE = [FLOW_THRESHOLD for _ in range(QUEUE_MAX_SIZE)]
 
 # 設定 Dash 應用程式的介面
@@ -62,7 +59,7 @@ app.layout = html.Div([
         value='Viridis',
         style={'margin-left': '7px','margin-top': '12px','width': '120px'}
         ),
-    html.Button('Refresh Redis Cache',
+    html.Button('Generate Random Array',
                 id='generate-button',
                 n_clicks=0,
                 style={'margin-left': '15px','margin-top': '22px','height': '37px'}
@@ -124,10 +121,6 @@ app.layout = html.Div([
     ],style={'display': 'flex', 'flex-direction': 'column'})
     ],style={'margin-left': '30px','display': 'flex', 'flex-direction': 'row'})
     ])
-
-def save_backup_data(data:np.array) -> np.array:
-    bc_data = data.copy()
-    return bc_data
 
 def get_system_status():
     cpu_usage = psutil.cpu_percent(interval=1)
@@ -225,8 +218,8 @@ def generate_fig(data,colorscale):
     total_sum = np.sum(data)
     max_value = data.max()
     # guage
-    sum_guage_fig = get_guage(total_sum,"Total Signal",max_range = FLOW_THRESHOLD)
-    max_guage_fig = get_guage(max_value, "Max Signal in Grid",max_range = 50)
+    sum_guage_fig = get_guage(total_sum,"Total Signal",max_range = 45000)
+    max_guage_fig = get_guage(max_value, "Max Signal in Grid",max_range = 120)
     # flow fig
     flow_fig = get_flowfig(total_sum,FLOW_QUEUE,250,1150,f'Signal Flow (Latest {QUEUE_MAX_SIZE - 1})')
     # return
@@ -249,30 +242,13 @@ def update_figures(colorscale, n_clicks, n_intervals):
     triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
     if triggered_id == 'generate-button' and n_clicks is not None and n_clicks > 0:
         # 手動更新
-        data = get_redis_data()
-        if data is not None:
-            backup_data= save_backup_data(data)
-            print("Manually get_redis_data")
-        else:
-            print("Manually No redis data")
-
+        data = np.random.randint(100, size=(30, 20))
     elif triggered_id == 'interval-component' and n_intervals is not None and n_intervals > 0:
         # 定時更新
-        # data = np.random.randint(100, size=(240, 220))
-        # data = np.zeros((240, 220))
-        data = get_redis_data()
-        if data is not None:
-            backup_data = save_backup_data(data)
-            print("Auto get_redis_data")
-        else:
-            print("Auto waiting redis data")
+        data = np.random.randint(100, size=(30, 20))
     else:
         # 初始資料
         data = init_data
-
-    if data is None:
-        print("None data")
-        data = backup_data if backup_data is not None else np.zeros((240,220))
 
     sum_fig,density_fig,guage_fig1,guage_fig2,flow_fig = generate_fig(data, colorscale)
     return sum_fig, density_fig,guage_fig1,guage_fig2,flow_fig

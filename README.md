@@ -4,8 +4,8 @@
 - [x] GO calculate GIS Index (2023/4/8)
 - [x] GO connect to Redis for cache and temporary storage
 - [x] Construct Simple Web Page for Visualizations(time-line done)
-- [ ] Integrate GO server with DB and Web Page
-- [ ] TBD
+- [x] Integrate GO server with DB and Web Page
+- [ ] Optimize the speed of Dashboard (maybe ?)
 
     
 1. FINISH MULTI-PROCESSING GENERATE FAKE DATA in 9.81 min : 526 MB / 3,769,343 files in 120 folders    
@@ -14,7 +14,8 @@
 4. Add simple redis connection: save simple Grid data for 10 seconds(local test)    
 5. Finish All GIS GRID SUM save to redis(expire time is controlable now, now set to 10 sec)    
 6. Construct simple dashboard by python ```dash plotly```, not integrated with GO server yet.    
-7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)    
+7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
+8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)   
 
 Redis-Server Commands
 ```=
@@ -27,4 +28,35 @@ redis-cli ping
 redis-cli --version
 ```
 
-:point_right: I use Redis for Windows version 5.0.14.1
+:point_right: I use Redis for Windows version 5.0.14.1    
+
+## Save Directory ##    
+```=
+// Fake JSON - under multiple batch_x directory, x = 1 ~ 120
+D:\Fake_Data\batch_x
+
+// Grid Binary
+D:\binary_grids\
+
+// Screenshots
+D:\GO_gis_server\test\Dashboard\Screenshots
+```    
+
+## Operation ##
+```=
+// Open one powershell (**PS**), one normal CMD (**CMD**),one anaconda python prompt (**AP**)
+
+// 1. Start Redis Server
+**CMD** : cd C:\Program Files\Redis
+**CMD** : redis-server --service-start
+**CMD** : redis-cli ping
+
+// 2. Go to the dashboard directory and start (use debug mode or not is up to you, debug mode has a much more clean prompt creen)
+**AP** : cd D:\GO_gis_server\test\Dashboard
+**AP** : python dashboard.py
+
+// 3. Go to the test directory and Start GO server
+**PS** : go run .\Read_JSON.go
+```    
+
+Take a while, the dashboard will automatic update
