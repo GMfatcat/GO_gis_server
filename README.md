@@ -6,7 +6,7 @@
 - [x] Construct Simple Web Page for Visualizations(time-line done)
 - [x] Integrate GO server with DB and Web Page
 - [ ] Optimize the speed of Dashboard (maybe ?)
-
+- [ ] Correct the XY label name of Dashboard (maybe ?)
     
 1. FINISH MULTI-PROCESSING GENERATE FAKE DATA in 9.81 min : 526 MB / 3,769,343 files in 120 folders    
 2. Finish GIS GRID INDEX CALCULATION: Solve import modules in Test directory    
@@ -15,7 +15,9 @@
 5. Finish All GIS GRID SUM save to redis(expire time is controlable now, now set to 10 sec)    
 6. Construct simple dashboard by python ```dash plotly```, not integrated with GO server yet.    
 7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
-8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)   
+8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)    
+
+## More Details see word documentation in /report/  :page_facing_up:	
 
 ## Redis-Server Commands :hugs:
 ```=
