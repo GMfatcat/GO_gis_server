@@ -68,7 +68,10 @@ AP : python dashboard.py
 PS : go run .\Read_JSON.go
 ```    
 
-Take a while, the dashboard will automatic update:repeat:    
+Take a while, the dashboard will automatic update:repeat:  
+<p align="center">
+  <img src="./test/Dashboard/Screenshots/2023_04_21_15_14_08_fullscreenshot.png" alt="Dashboard Example">
+</p>  
 
 ## Creator
 
