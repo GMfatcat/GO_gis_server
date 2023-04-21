@@ -17,7 +17,7 @@
 7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
 8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)    
 
-## More Details see word documentation in /report/  :page_facing_up:	
+## More Details see word documentation in ```./report/```  :page_facing_up:	
 
 ## Redis-Server Commands :hugs:
 ```=
@@ -74,6 +74,11 @@ Take a while, the dashboard will automatic update:repeat:
 <p align="center">
   <img src="./test/Dashboard/Screenshots/2023_04_21_15_14_08_fullscreenshot.png" alt="Dashboard Example">
 </p>  
+
+
+:::info
+This is my first try of GO language project, so I keep less third party modules
+:::
 
 ## Creator
 
