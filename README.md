@@ -19,10 +19,10 @@
 2. Finish GIS GRID INDEX CALCULATION: Solve import modules in Test directory    
 3. Calculate and Save binary data of batch_1 in 0.5 ~ 0.6 seconds    
 4. Add simple redis connection: save simple Grid data for 10 seconds(local test)    
-5. Finish All GIS GRID SUM save to redis(expire time is controlable now, now set to 10 sec)    
+5. Finish All GIS GRID SUM save to redis(expire time is controlable now, now set to 15 sec)    
 6. Construct simple dashboard by python ```dash plotly```, not integrated with GO server yet.    
 7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
-8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)    
+8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)(2023/04/21)       
 
 ## More Details see word documentation in ```./report/```  :page_facing_up:	
 
@@ -84,9 +84,7 @@ Take a while, the dashboard will automatic update:repeat:
 
 
 **This is my first try of GO language project, so I keep less third party modules**    
-**So I don't want to use Webpage module such as ```GIN```**
-
-
+**So I don't want to use module such as ```GIN```**    
 
 ## Creator
 
