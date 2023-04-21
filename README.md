@@ -17,7 +17,7 @@
 7. SVG on the dashboard download from [svgrepo](https://www.svgrepo.com/)     
 8. Finsh Intergrating with GO server and Redis cache (However, there's still some time knid of buggy:dizzy_face:)   
 
-Redis-Server Commands
+## Redis-Server Commands ##
 ```=
 // RUN with cmd , not powershell
 redis-server --service-start
@@ -44,19 +44,20 @@ D:\GO_gis_server\test\Dashboard\Screenshots
 
 ## Operation ##
 ```=
-// Open one powershell (**PS**), one normal CMD (**CMD**),one anaconda python prompt (**AP**)
+// Open one powershell (PS), one normal CMD (CMD),one anaconda python prompt (AP)
 
 // 1. Start Redis Server
-**CMD** : cd C:\Program Files\Redis
-**CMD** : redis-server --service-start
-**CMD** : redis-cli ping
+CMD : cd C:\Program Files\Redis
+CMD : redis-server --service-start
+CMD : redis-cli ping
 
-// 2. Go to the dashboard directory and start (use debug mode or not is up to you, debug mode has a much more clean prompt creen)
-**AP** : cd D:\GO_gis_server\test\Dashboard
-**AP** : python dashboard.py
+// 2. Go to the dashboard directory and start 
+// use debug mode or not is up to you, debug mode has a much more clean prompt screen
+AP : cd D:\GO_gis_server\test\Dashboard
+AP : python dashboard.py
 
 // 3. Go to the test directory and Start GO server
-**PS** : go run .\Read_JSON.go
+PS : go run .\Read_JSON.go
 ```    
 
 Take a while, the dashboard will automatic update
